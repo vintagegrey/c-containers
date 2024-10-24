@@ -18,17 +18,45 @@ void cc_vector_init(cc_vector_t *v, size_t element_size, size_t capacity) {
     CC_ASSERT(v->data, CC_FAILED_ALLOC);
 }
 
-void cc_vector_grow(cc_vector_t *v) {
-    CC_ASSERT(v, CC_NOT_INIT);
-
-    v->capacity *= 2;
-    void *tmp = realloc(v->data, v->capacity * v->element_size);
+static void cc__vector_resize(cc_vector_t *v, size_t size) {
+    void *tmp = realloc(v->data, size * v->element_size);
     CC_ASSERT(tmp, CC_NO_REALLOC);
 
     v->data = tmp;
 }
 
-/** @warning: Not meant to be used on its own: use cc_vector_push or cc_vector_push_s. */
+void cc_vector_grow(cc_vector_t *v) {
+    CC_ASSERT(v, CC_NOT_INIT);
+    v->capacity *= 2;
+    cc__vector_resize(v, v->capacity);
+}
+
+void cc_vector_reserve(cc_vector_t *v, size_t size) {
+    CC_ASSERT(v, CC_NOT_INIT);
+
+    if (size < v->capacity) {
+        CC_ERROR(CC_SHRINK_VEC);
+        return;
+    }
+
+    cc__vector_resize(v, size);
+}
+
+static void cc__vector_memset_unused(cc_vector_t *v, int value) {
+    if (v->count == v->capacity) {
+        return;
+    }
+
+    void *dst = ((char *) v->data) + (v->count * v->element_size);
+    size_t s = (v->capacity - v->count) * v->element_size;
+    memset(dst, value, s);
+}
+
+void cc_vector_reserve_set(cc_vector_t *v, size_t size, int value) {
+    cc_vector_reserve(v, size);
+    cc__vector_memset_unused(v, value);
+}
+
 static void cc__vector_insert(cc_vector_t *v, void *e) {
     if (v->count == v->capacity) {
         cc_vector_grow(v);

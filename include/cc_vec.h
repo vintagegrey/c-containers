@@ -15,6 +15,8 @@ typedef struct {
 
 void cc_vector_init(cc_vector_t *v, size_t element_size, size_t capacity);
 void cc_vector_grow(cc_vector_t *v);
+void cc_vector_reserve(cc_vector_t *v, size_t size);
+void cc_vector_reserve_set(cc_vector_t *v, size_t size, int value);
 void cc_vector_push(cc_vector_t *v, void *e);
 void cc_vector_push_s(cc_vector_t *v, void *e, size_t size);
 void *cc_vector_pop(cc_vector_t *v);
