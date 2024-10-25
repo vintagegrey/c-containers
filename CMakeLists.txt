@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 11)
 
 include_directories(include src)
 
-add_library(c_containers library.c
+add_library(c_containers
         include/cc_vec.h
         src/cc_util.h
         src/cc_vec.c
