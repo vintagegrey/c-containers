@@ -10,5 +10,6 @@
 
 #define CC_ERROR(_msg) fprintf(stderr, "%s(): %s.\n", __func__, _msg)
 #define CC_ASSERT(_e, ...) do { if (!(_e)) { CC_ERROR(__VA_ARGS__); exit(1); } } while(0)
+#define CC_API  (__declspec(dllexport))
 
 #endif //C_CONTAINERS_CC_UTIL_H
